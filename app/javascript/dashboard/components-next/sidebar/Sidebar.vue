@@ -351,10 +351,10 @@ const menuItems = computed(() => {
           to: accountScopedRoute('campaigns_whatsapp_index'),
         },
         {
-          name: 'WspFasia',
-          label: 'WspFasia',
+          name: 'WhatsApp API',
+          label: 'WhatsApp API',
           icon: 'i-lucide-message-circle',
-          // No agrego 'to', solo es visual
+          to: accountScopedRoute('campaigns_whatsapp_index'),
         },
       ],
     },
