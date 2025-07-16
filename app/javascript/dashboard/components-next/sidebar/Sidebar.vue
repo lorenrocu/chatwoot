@@ -354,7 +354,7 @@ const menuItems = computed(() => {
           name: 'WhatsApp API',
           label: 'WhatsApp API',
           icon: 'i-lucide-message-circle',
-          to: accountScopedRoute('campaigns_whatsapp_index'),
+          to: accountScopedRoute('campaigns_whatsapp_api_index'),
         },
       ],
     },
