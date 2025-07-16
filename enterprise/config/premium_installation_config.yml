@@ -4,19 +4,19 @@
 - name: LOGO_THUMBNAIL
   value: 'https://fasiacrm.com/wp-content/uploads/2024/01/Vector-1.png'
 - name: LOGO
-  value: '/brand-assets/logo.svg'
+  value: 'https://fasiacrm.com/wp-content/uploads/2024/01/Capa_6.png'
 - name: LOGO_DARK
-  value: '/brand-assets/logo_dark.svg'
+  value: 'https://fasiacrm.com/wp-content/uploads/2024/01/Capa_6.png'
 - name: BRAND_URL
-  value: 'https://www.chatwoot.com'
+  value: 'https://www.fasiacrm.com'
 - name: WIDGET_BRAND_URL
-  value: 'https://www.chatwoot.com'
+  value: 'https://www.fasiacrm.com'
 - name: BRAND_NAME
-  value: 'Chatwoot'
+  value: 'FasiaCRM'
 - name: TERMS_URL
-  value: 'https://www.chatwoot.com/terms-of-service'
+  value: 'https://www.fasiacrm.com/terms-of-service'
 - name: PRIVACY_URL
-  value: 'https://www.chatwoot.com/privacy-policy'
+  value: 'https://www.fasiacrm.com/privacy-policy'
 - name: DISPLAY_MANIFEST
   value: true
 # ------- End of Branding Related Config ------- #
