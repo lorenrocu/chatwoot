@@ -336,6 +336,12 @@ const menuItems = computed(() => {
           label: t('SIDEBAR.WHATSAPP'),
           to: accountScopedRoute('campaigns_whatsapp_index'),
         },
+        {
+          name: 'WspFasia',
+          label: 'WspFasia',
+          icon: 'i-lucide-message-circle',
+          // No agrego 'to', solo es visual
+        },
       ],
     },
     {
