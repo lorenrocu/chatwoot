@@ -2,7 +2,7 @@
 - name: INSTALLATION_NAME
   value: 'Chatwoot'
 - name: LOGO_THUMBNAIL
-  value: '/brand-assets/logo_thumbnail.svg'
+  value: 'https://fasiacrm.com/wp-content/uploads/2024/01/Vector-1.png'
 - name: LOGO
   value: '/brand-assets/logo.svg'
 - name: LOGO_DARK
