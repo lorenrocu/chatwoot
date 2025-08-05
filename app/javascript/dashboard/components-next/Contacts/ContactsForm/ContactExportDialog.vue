@@ -13,6 +13,7 @@ const { t } = useI18n();
 const route = useRoute();
 
 const dialogRef = ref(null);
+const downloadDirect = ref(true); // Por defecto, descarga directa
 
 const segments = useMapGetter('customViews/getContactCustomViews');
 const appliedFilters = useMapGetter('contacts/getAppliedContactFilters');
@@ -38,6 +39,7 @@ const exportContacts = async () => {
   emit('export', {
     ...query,
     label: route.params.label || '',
+    download_direct: downloadDirect.value,
   });
 };
 
@@ -62,5 +64,26 @@ defineExpose({ dialogRef });
     :is-loading="isExportingContact"
     :disable-confirm-button="isExportingContact"
     @confirm="handleDialogConfirm"
-  />
+  >
+    <template #default>
+      <div class="mt-4">
+        <label class="flex items-center space-x-2">
+          <input
+            v-model="downloadDirect"
+            type="checkbox"
+            class="form-checkbox h-4 w-4 text-blue-600"
+          />
+          <span class="text-sm text-gray-700">
+            {{ t('CONTACTS_LAYOUT.HEADER.ACTIONS.EXPORT_CONTACT.DOWNLOAD_DIRECT') }}
+          </span>
+        </label>
+        <p class="text-xs text-gray-500 mt-1">
+          {{ downloadDirect 
+            ? t('CONTACTS_LAYOUT.HEADER.ACTIONS.EXPORT_CONTACT.DOWNLOAD_DIRECT_DESCRIPTION') 
+            : t('CONTACTS_LAYOUT.HEADER.ACTIONS.EXPORT_CONTACT.EMAIL_DESCRIPTION') 
+          }}
+        </p>
+      </div>
+    </template>
+  </Dialog>
 </template>

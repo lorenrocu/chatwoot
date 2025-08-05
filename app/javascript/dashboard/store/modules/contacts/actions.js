@@ -163,10 +163,23 @@ export const actions = {
     }
   },
 
-  export: async ({ commit }, { payload, label }) => {
+  export: async ({ commit }, { payload, label, download_direct = false }) => {
     commit(types.SET_CONTACT_UI_FLAG, { isExporting: true });
     try {
-      await ContactAPI.exportContacts({ payload, label });
+      const response = await ContactAPI.exportContacts({ payload, label, download_direct });
+      
+      // Si es descarga directa, manejar la respuesta como blob
+      if (download_direct && response.data) {
+        const blob = new Blob([response.data], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `contacts_export_${new Date().toISOString().split('T')[0]}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      }
 
       commit(types.SET_CONTACT_UI_FLAG, { isExporting: false });
     } catch (error) {

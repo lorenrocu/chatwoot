@@ -331,7 +331,11 @@
           "TITLE": "Export contacts",
           "DESCRIPTION": "Quickly export a csv file with comprehensive details of your contacts",
           "CONFIRM": "Export",
+          "DOWNLOAD_DIRECT": "Download directly",
+          "DOWNLOAD_DIRECT_DESCRIPTION": "The CSV file will be downloaded directly to your browser",
+          "EMAIL_DESCRIPTION": "You will receive a download link via email",
           "SUCCESS_MESSAGE": "Export is in progress. You will be notified on email when the export file is ready to download.",
+          "DOWNLOAD_SUCCESS_MESSAGE": "Contacts have been successfully exported and downloaded.",
           "ERROR_MESSAGE": "There was an error, please try again"
         },
         "SORT_BY": {

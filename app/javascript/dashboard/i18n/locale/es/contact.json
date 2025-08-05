@@ -330,7 +330,11 @@
           "TITLE": "Exportar contactos",
           "DESCRIPTION": "Exporta rápidamente un archivo csv con los detalles completos de tus contactos",
           "CONFIRM": "Exportar",
+          "DOWNLOAD_DIRECT": "Descargar directamente",
+          "DOWNLOAD_DIRECT_DESCRIPTION": "El archivo CSV se descargará directamente en tu navegador",
+          "EMAIL_DESCRIPTION": "Recibirás un enlace de descarga por correo electrónico",
           "SUCCESS_MESSAGE": "El proceso de exportar esta en proceso. Será notificado por correo cuando el archivo esté listo para descargar.",
+          "DOWNLOAD_SUCCESS_MESSAGE": "Los contactos se han exportado y descargado exitosamente.",
           "ERROR_MESSAGE": "Hubo un error, por favor inténtelo de nuevo"
         },
         "SORT_BY": {

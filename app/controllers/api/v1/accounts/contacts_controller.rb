@@ -1,3 +1,5 @@
+require 'csv'
+
 class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
   include Sift
   sort_on :email, type: :string
@@ -45,10 +47,38 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
   end
 
   def export
+    # Verificar si se solicita descarga directa
+    if params[:download_direct] == 'true'
+      export_direct
+    else
+      # Comportamiento original - envío por email
+      column_names = params['column_names']
+      filter_params = { :payload => params.permit!['payload'], :label => params.permit!['label'] }
+      Account::ContactsExportJob.perform_later(Current.account.id, Current.user.id, column_names, filter_params)
+      head :ok, message: I18n.t('errors.contacts.export.success')
+    end
+  end
+
+  def export_direct
     column_names = params['column_names']
     filter_params = { :payload => params.permit!['payload'], :label => params.permit!['label'] }
-    Account::ContactsExportJob.perform_later(Current.account.id, Current.user.id, column_names, filter_params)
-    head :ok, message: I18n.t('errors.contacts.export.success')
+    
+    # Generar CSV directamente
+    headers = valid_headers(column_names)
+    contacts_data = get_filtered_contacts(filter_params)
+    
+    csv_data = CSV.generate do |csv|
+      csv << headers
+      contacts_data.each do |contact|
+        csv << headers.map { |header| contact.send(header) }
+      end
+    end
+    
+    # Enviar CSV como descarga directa
+    send_data csv_data,
+              filename: "#{Current.account.name}_#{Current.account.id}_contacts_#{Date.current.strftime('%Y%m%d')}.csv",
+              type: 'text/csv',
+              disposition: 'attachment'
   end
 
   # returns online contacts
@@ -193,5 +223,28 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
 
   def render_error(error, error_status)
     render json: error, status: error_status
+  end
+
+  def check_authorization
+    authorize(Contact)
+  end
+
+  def valid_headers(column_names)
+    (column_names.presence || default_columns) & Contact.column_names
+  end
+
+  def get_filtered_contacts(filter_params)
+    if filter_params.present? && filter_params[:payload].present? && filter_params[:payload].any?
+      result = ::Contacts::FilterService.new(Current.account, Current.user, filter_params).perform
+      result[:contacts]
+    elsif filter_params[:label].present?
+      Current.account.contacts.resolved_contacts.tagged_with(filter_params[:label], any: true)
+    else
+      Current.account.contacts.resolved_contacts
+    end
+  end
+
+  def default_columns
+    %w[id name email phone_number]
   end
 end
