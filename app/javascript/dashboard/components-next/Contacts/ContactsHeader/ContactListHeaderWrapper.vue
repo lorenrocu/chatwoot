@@ -123,9 +123,17 @@ const onImport = async file => {
 const onExport = async query => {
   try {
     await store.dispatch('contacts/export', query);
-    useAlert(
-      t('CONTACTS_LAYOUT.HEADER.ACTIONS.EXPORT_CONTACT.SUCCESS_MESSAGE')
-    );
+    
+    // Mostrar mensaje apropiado según el tipo de exportación
+    if (query.download_direct) {
+      useAlert(
+        t('CONTACTS_LAYOUT.HEADER.ACTIONS.EXPORT_CONTACT.DOWNLOAD_SUCCESS_MESSAGE')
+      );
+    } else {
+      useAlert(
+        t('CONTACTS_LAYOUT.HEADER.ACTIONS.EXPORT_CONTACT.SUCCESS_MESSAGE')
+      );
+    }
   } catch (error) {
     useAlert(
       error.message ||

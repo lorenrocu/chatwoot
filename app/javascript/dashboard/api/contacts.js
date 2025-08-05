@@ -91,7 +91,14 @@ class ContactAPI extends ApiClient {
   }
 
   exportContacts(queryPayload) {
-    return axios.post(`${this.url}/export`, queryPayload);
+    const config = {};
+    
+    // Si es descarga directa, configurar para recibir blob
+    if (queryPayload.download_direct) {
+      config.responseType = 'blob';
+    }
+    
+    return axios.post(`${this.url}/export`, queryPayload, config);
   }
 }
 
