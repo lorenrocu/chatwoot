@@ -11,7 +11,7 @@ const emit = defineEmits(['close']);
 
 const { t } = useI18n();
 const store = useStore();
-const { showAlert } = useAlert();
+const showAlert = useAlert();
 
 const isCreating = ref(false);
 const showModal = ref(true);
