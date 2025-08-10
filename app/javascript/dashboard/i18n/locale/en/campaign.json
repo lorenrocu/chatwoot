@@ -203,6 +203,126 @@
         }
       }
     },
+    "WHATSAPP_API": {
+      "HEADER_TITLE": "WhatsApp API campaigns",
+      "NEW_CAMPAIGN": "Create campaign",
+      "EMPTY_STATE": {
+        "TITLE": "No WhatsApp API campaigns are available",
+        "SUBTITLE": "Launch a WhatsApp API campaign to reach your customers directly using your custom WhatsApp Business API. Send multimedia messages, offers or make announcements with ease.",
+        "CREATE_BUTTON": "Create your first campaign",
+        "INFO_TITLE": "WhatsApp API Campaign Features",
+        "INFO_POINT_1": "Send multimedia messages (images, videos, documents, audio)",
+        "INFO_POINT_2": "Advanced audience segmentation and custom filters",
+        "INFO_POINT_3": "Real-time delivery tracking and analytics"
+      },
+      "CARD": {
+        "STATUS": {
+          "PENDING": "Pending",
+          "RUNNING": "Running",
+          "COMPLETED": "Completed",
+          "FAILED": "Failed",
+          "CANCELLED": "Cancelled"
+        },
+        "CAMPAIGN_DETAILS": {
+          "SENT_FROM": "Sent from",
+          "ON": "on",
+          "RECIPIENTS": "Recipients",
+          "MEDIA_TYPE": "Media type"
+        }
+      },
+      "FORM": {
+        "TITLE": "Campaign Title",
+        "TITLE_PLACEHOLDER": "Enter a descriptive title for your campaign",
+        "INBOX": "WhatsApp API Inbox",
+        "INBOX_PLACEHOLDER": "Select your WhatsApp API inbox",
+        "MEDIA_TYPE": "Message Type",
+        "MEDIA_UPLOAD": "Upload Media",
+        "MESSAGE": "Message Content",
+        "MESSAGE_PLACEHOLDER": "Enter your campaign message...",
+        "MESSAGE_HINT": "You can use variables like {{contact.name}} to personalize messages",
+        "AUDIENCE": "Target Audience",
+        "SELECT_LABELS": "Select Labels",
+        "SELECT_LABELS_PLACEHOLDER": "Choose customer labels to target",
+        "CUSTOM_FILTERS": "Custom Filters",
+        "CUSTOM_FILTERS_HINT": "Define advanced criteria to target specific customer segments",
+        "SCHEDULED_AT": "Schedule Campaign",
+        "SCHEDULED_AT_PLACEHOLDER": "Select date and time to send",
+        "SCHEDULED_AT_HINT": "Leave empty to send immediately",
+        "CANCEL": "Cancel",
+        "CREATE": "Create Campaign"
+      },
+      "CREATE": {
+        "SUCCESS": "WhatsApp API campaign created successfully",
+        "ERROR": "There was an error creating the campaign. Please try again.",
+        "FORM": {
+          "TITLE": {
+            "LABEL": "Title",
+            "PLACEHOLDER": "Please enter the title of campaign",
+            "ERROR": "Title is required"
+          },
+          "INBOX": {
+            "LABEL": "Select Inbox",
+            "PLACEHOLDER": "Select Inbox",
+            "EMPTY_STATE": "No eligible inboxes available",
+            "EMPTY_STATE_HELP": "Please ensure you have at least one WhatsApp API inbox with the 'Campaign' feature enabled to send WhatsApp campaigns.",
+            "ERROR": "Inbox is required"
+          },
+          "TEMPLATE": {
+            "LABEL": "WhatsApp Template",
+            "PLACEHOLDER": "Select a template",
+            "INFO": "Select a template to use for this campaign.",
+            "ERROR": "Template is required",
+            "PREVIEW": "Template Preview",
+            "LANGUAGE": "Language",
+            "CATEGORY": "Category",
+            "VARIABLES_LABEL": "Variables",
+            "VARIABLE_PLACEHOLDER": "Enter value for {variable}"
+          },
+          "AUDIENCE": {
+            "LABEL": "Audience",
+            "PLACEHOLDER": "Select the customer labels",
+            "ERROR": "Audience is required"
+          },
+          "SCHEDULED_AT": {
+            "LABEL": "Scheduled time",
+            "PLACEHOLDER": "Please select the time",
+            "ERROR": "Scheduled time is required"
+          },
+          "SUBMIT": "Create Campaign",
+          "CANCEL": "Cancel"
+        }
+      },
+      "DELETE": {
+        "SUCCESS": "WhatsApp API campaign deleted successfully",
+        "ERROR": "There was an error deleting the campaign. Please try again."
+      },
+      "MEDIA_TYPE": {
+        "TEXT": "Text Only",
+        "IMAGE": "Image",
+        "DOCUMENT": "Document",
+        "VIDEO": "Video",
+        "AUDIO": "Audio"
+      },
+      "AUDIENCE": {
+        "ALL_CONTACTS": "All Contacts",
+        "LABELS": "By Labels",
+        "CUSTOM": "Custom Filters"
+      },
+      "VALIDATIONS": {
+        "TITLE_REQUIRED": "Campaign title is required",
+        "MESSAGE_REQUIRED": "Message content is required",
+        "INBOX_REQUIRED": "WhatsApp API inbox is required",
+        "MEDIA_URL_REQUIRED": "Media file is required for this message type"
+      },
+      "UPDATE": {
+        "SUCCESS": "WhatsApp API campaign updated successfully",
+        "ERROR": "There was an error updating the campaign. Please try again."
+      },
+      "TRIGGER": {
+        "SUCCESS": "WhatsApp API campaign triggered successfully",
+        "ERROR": "There was an error triggering the campaign. Please try again."
+      }
+    },
     "CONFIRM_DELETE": {
       "TITLE": "Are you sure to delete?",
       "DESCRIPTION": "The delete action is permanent and cannot be reversed.",
