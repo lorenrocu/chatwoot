@@ -37,6 +37,8 @@
           "INBOX": {
             "LABEL": "Select Inbox",
             "PLACEHOLDER": "Select Inbox",
+            "EMPTY_STATE": "No eligible inboxes available",
+            "EMPTY_STATE_HELP": "Please ensure you have at least one WhatsApp API inbox with the 'Campaign' feature enabled to send WhatsApp campaigns.",
             "ERROR": "Inbox is required"
           },
           "SENT_BY": {

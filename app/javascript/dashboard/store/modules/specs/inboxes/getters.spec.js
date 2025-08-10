@@ -359,4 +359,91 @@ describe('#getters', () => {
       expect(result[0].name).toBe('fallback_template');
     });
   });
+
+  // New tests for WhatsApp API Campaign filtering and templates
+  it('getApiInboxes returns only API inboxes with whatsapp_api_enabled = true', () => {
+    const state = {
+      records: [
+        {
+          id: 101,
+          name: 'API WABA Enabled',
+          channel_type: 'Channel::Api',
+          additional_attributes: { whatsapp_api_enabled: true },
+        },
+        {
+          id: 102,
+          name: 'API WABA Disabled',
+          channel_type: 'Channel::Api',
+          additional_attributes: { whatsapp_api_enabled: false },
+        },
+        {
+          id: 103,
+          name: 'API No Attr',
+          channel_type: 'Channel::Api',
+        },
+        {
+          id: 104,
+          name: 'Whatsapp Non-API',
+          channel_type: 'Channel::Whatsapp',
+        },
+        {
+          id: 105,
+          name: 'Web Widget',
+          channel_type: 'Channel::WebWidget',
+        },
+      ],
+    };
+
+    const result = getters.getApiInboxes(state);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toEqual({
+      id: 101,
+      name: 'API WABA Enabled',
+      channel_type: 'Channel::Api',
+      additional_attributes: { whatsapp_api_enabled: true },
+    });
+  });
+
+  it('getWhatsAppTemplates reads from additional_attributes and filters out media templates', () => {
+    const state = {
+      records: [
+        {
+          id: 201,
+          name: 'API Inbox',
+          channel_type: 'Channel::Api',
+          additional_attributes: {
+            message_templates: [
+              {
+                id: 't1',
+                name: 'text_template',
+                components: [
+                  { type: 'BODY', text: 'Hello there' },
+                ],
+              },
+              {
+                id: 't2',
+                name: 'image_template',
+                components: [
+                  { type: 'BODY', text: 'Hi' },
+                  { type: 'HEADER', format: 'IMAGE' },
+                ],
+              },
+              {
+                id: 't3',
+                name: 'video_template',
+                components: [
+                  { type: 'BODY', text: 'Hola' },
+                  { type: 'HEADER', format: 'VIDEO' },
+                ],
+              },
+            ],
+          },
+        },
+      ],
+    };
+
+    const templates = getters.getWhatsAppTemplates(state)(201);
+    expect(templates).toHaveLength(1);
+    expect(templates[0].id).toBe('t1');
+  });
 });

@@ -37,6 +37,8 @@
           "INBOX": {
             "LABEL": "Seleccione una bandeja de entrada",
             "PLACEHOLDER": "Seleccione una bandeja de entrada",
+            "EMPTY_STATE": "No hay bandejas elegibles disponibles",
+            "EMPTY_STATE_HELP": "Asegúrese de tener al menos una bandeja de entrada de WhatsApp API con la función de 'Campañas' habilitada para enviar campañas de WhatsApp.",
             "ERROR": "Se requiere buzón de entrada"
           },
           "SENT_BY": {
