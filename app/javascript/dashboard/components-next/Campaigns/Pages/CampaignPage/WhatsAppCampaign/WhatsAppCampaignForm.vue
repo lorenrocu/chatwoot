@@ -92,7 +92,7 @@ const selectedTemplate = computed(() => {
 });
 
 const getErrorMessage = (field, errorKey) => {
-  const baseKey = 'CAMPAIGN.WHATSAPP.CREATE.FORM';
+  const baseKey = 'CAMPAIGN.WHATSAPP_API.CREATE.FORM';
   return v$.value[field].$error ? t(`${baseKey}.${errorKey}.ERROR`) : '';
 };
 
@@ -139,16 +139,19 @@ const prepareCampaignDetails = () => {
     processed_params: parserData?.processedParams || {},
   };
 
+  // Prepare audience data for WhatsApp API campaigns
+  const audienceData = {
+    labels: state.selectedAudience || []
+  };
+
   return {
     title: state.title,
     message: templateContent,
     template_params: templateParams,
     inbox_id: state.inboxId,
     scheduled_at: formatToUTCString(state.scheduledAt),
-    audience: state.selectedAudience?.map(id => ({
-      id,
-      type: 'Label',
-    })),
+    audience: audienceData,
+    multimedia: {}, // Soporte para multimedia (se puede expandir en el futuro)
   };
 };
 
@@ -174,22 +177,22 @@ watch(
   <form class="flex flex-col gap-4" @submit.prevent="handleSubmit">
     <Input
       v-model="state.title"
-      :label="t('CAMPAIGN.WHATSAPP.CREATE.FORM.TITLE.LABEL')"
-      :placeholder="t('CAMPAIGN.WHATSAPP.CREATE.FORM.TITLE.PLACEHOLDER')"
+      :label="t('CAMPAIGN.WHATSAPP_API.CREATE.FORM.TITLE.LABEL')"
+      :placeholder="t('CAMPAIGN.WHATSAPP_API.CREATE.FORM.TITLE.PLACEHOLDER')"
       :message="formErrors.title"
       :message-type="formErrors.title ? 'error' : 'info'"
     />
 
     <div class="flex flex-col gap-1">
       <label for="inbox" class="mb-0.5 text-sm font-medium text-n-slate-12">
-        {{ t('CAMPAIGN.WHATSAPP.CREATE.FORM.INBOX.LABEL') }}
+        {{ t('CAMPAIGN.WHATSAPP_API.CREATE.FORM.INBOX.LABEL') }}
       </label>
       <ComboBox
         id="inbox"
         v-model="state.inboxId"
         :options="inboxOptions"
         :has-error="!!formErrors.inbox"
-        :placeholder="t('CAMPAIGN.WHATSAPP.CREATE.FORM.INBOX.PLACEHOLDER')"
+        :placeholder="t('CAMPAIGN.WHATSAPP_API.CREATE.FORM.INBOX.PLACEHOLDER')"
         :message="formErrors.inbox"
         class="[&>div>button]:bg-n-alpha-black2 [&>div>button:not(.focused)]:dark:outline-n-weak [&>div>button:not(.focused)]:hover:!outline-n-slate-6"
       />
@@ -197,19 +200,19 @@ watch(
 
     <div class="flex flex-col gap-1">
       <label for="template" class="mb-0.5 text-sm font-medium text-n-slate-12">
-        {{ t('CAMPAIGN.WHATSAPP.CREATE.FORM.TEMPLATE.LABEL') }}
+        {{ t('CAMPAIGN.WHATSAPP_API.CREATE.FORM.TEMPLATE.LABEL') }}
       </label>
       <ComboBox
         id="template"
         v-model="state.templateId"
         :options="templateOptions"
         :has-error="!!formErrors.template"
-        :placeholder="t('CAMPAIGN.WHATSAPP.CREATE.FORM.TEMPLATE.PLACEHOLDER')"
+        :placeholder="t('CAMPAIGN.WHATSAPP_API.CREATE.FORM.TEMPLATE.PLACEHOLDER')"
         :message="formErrors.template"
         class="[&>div>button]:bg-n-alpha-black2 [&>div>button:not(.focused)]:dark:outline-n-weak [&>div>button:not(.focused)]:hover:!outline-n-slate-6"
       />
       <p class="mt-1 text-xs text-n-slate-11">
-        {{ t('CAMPAIGN.WHATSAPP.CREATE.FORM.TEMPLATE.INFO') }}
+        {{ t('CAMPAIGN.WHATSAPP_API.CREATE.FORM.TEMPLATE.INFO') }}
       </p>
     </div>
 
@@ -218,17 +221,69 @@ watch(
       v-if="selectedTemplate"
       ref="templateParserRef"
       :template="selectedTemplate"
-    />
+      class="flex flex-col gap-4 p-4 rounded-lg bg-n-alpha-black2"
+    >
+      <div class="flex justify-between items-center">
+        <h3 class="text-sm font-medium text-n-slate-12">
+          {{ selectedTemplate.name }}
+        </h3>
+        <span class="text-xs text-n-slate-11">
+          {{ t('CAMPAIGN.WHATSAPP_API.CREATE.FORM.TEMPLATE.LANGUAGE') }}:
+          {{ selectedTemplate.language || 'en' }}
+        </span>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <div class="rounded-md bg-n-alpha-black3">
+          <div class="text-sm whitespace-pre-wrap text-n-slate-12">
+            {{ processedString }}
+          </div>
+        </div>
+      </div>
+
+      <div class="text-xs text-n-slate-11">
+        {{ t('CAMPAIGN.WHATSAPP_API.CREATE.FORM.TEMPLATE.CATEGORY') }}:
+        {{ selectedTemplate.category || 'UTILITY' }}
+      </div>
+    </div>
+
+    <!-- Template Variables -->
+    <div
+      v-if="Object.keys(processedParams).length > 0"
+      class="flex flex-col gap-3"
+    >
+      <label class="text-sm font-medium text-n-slate-12">
+        {{ t('CAMPAIGN.WHATSAPP_API.CREATE.FORM.TEMPLATE.VARIABLES_LABEL') }}
+      </label>
+      <div class="flex flex-col gap-2">
+        <div
+          v-for="(value, key) in processedParams"
+          :key="key"
+          class="flex gap-2 items-center"
+        >
+          <Input
+            v-model="processedParams[key]"
+            type="text"
+            class="flex-1"
+            :placeholder="
+              t('CAMPAIGN.WHATSAPP_API.CREATE.FORM.TEMPLATE.VARIABLE_PLACEHOLDER', {
+                variable: key,
+              })
+            "
+          />
+        </div>
+      </div>
+    </div>
 
     <div class="flex flex-col gap-1">
       <label for="audience" class="mb-0.5 text-sm font-medium text-n-slate-12">
-        {{ t('CAMPAIGN.WHATSAPP.CREATE.FORM.AUDIENCE.LABEL') }}
+        {{ t('CAMPAIGN.WHATSAPP_API.CREATE.FORM.AUDIENCE.LABEL') }}
       </label>
       <TagMultiSelectComboBox
         v-model="state.selectedAudience"
         :options="audienceList"
-        :label="t('CAMPAIGN.WHATSAPP.CREATE.FORM.AUDIENCE.LABEL')"
-        :placeholder="t('CAMPAIGN.WHATSAPP.CREATE.FORM.AUDIENCE.PLACEHOLDER')"
+        :label="t('CAMPAIGN.WHATSAPP_API.CREATE.FORM.AUDIENCE.LABEL')"
+        :placeholder="t('CAMPAIGN.WHATSAPP_API.CREATE.FORM.AUDIENCE.PLACEHOLDER')"
         :has-error="!!formErrors.audience"
         :message="formErrors.audience"
         class="[&>div>button]:bg-n-alpha-black2"
@@ -237,10 +292,10 @@ watch(
 
     <Input
       v-model="state.scheduledAt"
-      :label="t('CAMPAIGN.WHATSAPP.CREATE.FORM.SCHEDULED_AT.LABEL')"
+      :label="t('CAMPAIGN.WHATSAPP_API.CREATE.FORM.SCHEDULED_AT.LABEL')"
       type="datetime-local"
       :min="currentDateTime"
-      :placeholder="t('CAMPAIGN.WHATSAPP.CREATE.FORM.SCHEDULED_AT.PLACEHOLDER')"
+      :placeholder="t('CAMPAIGN.WHATSAPP_API.CREATE.FORM.SCHEDULED_AT.PLACEHOLDER')"
       :message="formErrors.scheduledAt"
       :message-type="formErrors.scheduledAt ? 'error' : 'info'"
     />
@@ -250,12 +305,12 @@ watch(
         variant="faded"
         color="slate"
         type="button"
-        :label="t('CAMPAIGN.WHATSAPP.CREATE.FORM.BUTTONS.CANCEL')"
+        :label="t('CAMPAIGN.WHATSAPP_API.CREATE.FORM.BUTTONS.CANCEL')"
         class="w-full bg-n-alpha-2 text-n-blue-text hover:bg-n-alpha-3"
         @click="handleCancel"
       />
       <Button
-        :label="t('CAMPAIGN.WHATSAPP.CREATE.FORM.BUTTONS.CREATE')"
+        :label="t('CAMPAIGN.WHATSAPP_API.CREATE.FORM.BUTTONS.CREATE')"
         class="w-full"
         type="submit"
         :is-loading="isCreating"

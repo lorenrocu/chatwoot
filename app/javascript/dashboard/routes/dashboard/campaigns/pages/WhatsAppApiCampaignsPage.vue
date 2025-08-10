@@ -22,9 +22,8 @@ const isFetchingCampaigns = computed(() => uiFlags.value.isFetching);
 
 const confirmDeleteCampaignDialogRef = ref(null);
 
-// Aquí puedes filtrar campañas de tipo API si lo deseas
 const WhatsAppApiCampaigns = computed(
-  () => getters['campaigns/getAllCampaigns'].value.filter(c => c.inbox && c.inbox.channel_type === 'Channel::Api')
+  () => getters['campaigns/getWhatsAppApiCampaigns'].value
 );
 
 const hasNoWhatsAppApiCampaigns = computed(
@@ -39,8 +38,8 @@ const handleDelete = campaign => {
 
 <template>
   <CampaignLayout
-    :header-title="'WhatsApp API Campaigns'"
-    :button-label="'Crear campaña WhatsApp API'"
+    :header-title="t('CAMPAIGN.WHATSAPP_API.HEADER_TITLE')"
+    :button-label="t('CAMPAIGN.WHATSAPP_API.NEW_CAMPAIGN')"
     @click="toggleWhatsAppCampaignDialog()"
     @close="toggleWhatsAppCampaignDialog(false)"
   >
@@ -63,8 +62,8 @@ const handleDelete = campaign => {
     />
     <WhatsAppCampaignEmptyState
       v-else
-      :title="'No hay campañas WhatsApp API'"
-      :subtitle="'Crea tu primera campaña masiva usando tu canal WhatsApp API personalizado.'"
+      :title="t('CAMPAIGN.WHATSAPP_API.EMPTY_STATE.TITLE')"
+      :subtitle="t('CAMPAIGN.WHATSAPP_API.EMPTY_STATE.SUBTITLE')"
       class="pt-14"
     />
     <ConfirmDeleteCampaignDialog
@@ -72,4 +71,4 @@ const handleDelete = campaign => {
       :selected-campaign="selectedCampaign"
     />
   </CampaignLayout>
-</template> 
+</template>
