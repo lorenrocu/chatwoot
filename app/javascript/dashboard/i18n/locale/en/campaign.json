@@ -239,7 +239,7 @@
         "MEDIA_UPLOAD": "Upload Media",
         "MESSAGE": "Message Content",
         "MESSAGE_PLACEHOLDER": "Enter your campaign message...",
-        "MESSAGE_HINT": "You can use variables like {{contact.name}} to personalize messages",
+        "MESSAGE_HINT": "You can use variables like {contactName} to personalize messages.",
         "AUDIENCE": "Target Audience",
         "SELECT_LABELS": "Select Labels",
         "SELECT_LABELS_PLACEHOLDER": "Choose customer labels to target",
