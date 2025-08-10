@@ -204,3 +204,7 @@
   enabled: false
   premium: true
   chatwoot_internal: true
+- name: whatsapp_api_campaigns
+  display_name: WhatsApp API Campaigns
+  enabled: false
+  description: Enable WhatsApp API campaigns using custom API providers like Evolution API
