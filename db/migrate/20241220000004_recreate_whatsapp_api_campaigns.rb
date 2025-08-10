@@ -1,6 +1,17 @@
 class RecreateWhatsappApiCampaigns < ActiveRecord::Migration[7.0]
   def up
-    # Drop the existing table if it exists to start fresh
+    # First, drop all existing indexes manually if they exist
+    begin
+      execute "DROP INDEX IF EXISTS index_whatsapp_api_campaigns_on_account_id;"
+      execute "DROP INDEX IF EXISTS index_whatsapp_api_campaigns_on_inbox_id;"
+      execute "DROP INDEX IF EXISTS index_whatsapp_api_campaigns_on_status;"
+      execute "DROP INDEX IF EXISTS index_whatsapp_api_campaigns_on_scheduled_at;"
+      execute "DROP INDEX IF EXISTS index_whatsapp_api_campaigns_on_account_id_and_display_id;"
+    rescue ActiveRecord::StatementInvalid
+      # Indexes might not exist, continue
+    end
+    
+    # Drop the existing table if it exists
     if table_exists?(:whatsapp_api_campaigns)
       drop_table :whatsapp_api_campaigns
     end
@@ -26,12 +37,12 @@ class RecreateWhatsappApiCampaigns < ActiveRecord::Migration[7.0]
       t.timestamps
     end
 
-    # Add all indexes
-    add_index :whatsapp_api_campaigns, :account_id
-    add_index :whatsapp_api_campaigns, :inbox_id
-    add_index :whatsapp_api_campaigns, :status
-    add_index :whatsapp_api_campaigns, :scheduled_at
-    add_index :whatsapp_api_campaigns, [:account_id, :display_id], unique: true
+    # Add all indexes with explicit names to avoid conflicts
+    add_index :whatsapp_api_campaigns, :account_id, name: "idx_whatsapp_campaigns_account"
+    add_index :whatsapp_api_campaigns, :inbox_id, name: "idx_whatsapp_campaigns_inbox"
+    add_index :whatsapp_api_campaigns, :status, name: "idx_whatsapp_campaigns_status"
+    add_index :whatsapp_api_campaigns, :scheduled_at, name: "idx_whatsapp_campaigns_scheduled"
+    add_index :whatsapp_api_campaigns, [:account_id, :display_id], unique: true, name: "idx_whatsapp_campaigns_account_display"
 
     # Create sequence function for display_id per account
     execute <<-SQL
@@ -63,6 +74,17 @@ class RecreateWhatsappApiCampaigns < ActiveRecord::Migration[7.0]
   end
 
   def down
+    # Drop indexes first
+    begin
+      execute "DROP INDEX IF EXISTS idx_whatsapp_campaigns_account;"
+      execute "DROP INDEX IF EXISTS idx_whatsapp_campaigns_inbox;"
+      execute "DROP INDEX IF EXISTS idx_whatsapp_campaigns_status;"
+      execute "DROP INDEX IF EXISTS idx_whatsapp_campaigns_scheduled;"
+      execute "DROP INDEX IF EXISTS idx_whatsapp_campaigns_account_display;"
+    rescue ActiveRecord::StatementInvalid
+      # Continue if indexes don't exist
+    end
+    
     drop_table :whatsapp_api_campaigns if table_exists?(:whatsapp_api_campaigns)
     execute "DROP FUNCTION IF EXISTS create_whatsapp_api_campaign_display_id_sequence() CASCADE;"
   end
