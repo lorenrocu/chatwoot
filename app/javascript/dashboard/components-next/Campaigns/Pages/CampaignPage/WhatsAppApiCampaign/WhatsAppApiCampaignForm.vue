@@ -3,12 +3,12 @@ import { ref, computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useStore } from 'dashboard/composables/store';
 
-import Input from 'dashboard/components-next/Input/Input.vue';
-import Textarea from 'dashboard/components-next/Textarea/Textarea.vue';
-import Select from 'dashboard/components-next/Select/Select.vue';
+import Input from 'dashboard/components-next/input/Input.vue';
+import Textarea from 'dashboard/components-next/textarea/TextArea.vue';
+import Select from 'dashboard/components-next/selectmenu/SelectMenu.vue';
 import Button from 'dashboard/components-next/button/Button.vue';
-import Label from 'dashboard/components-next/Label/Label.vue';
-import FileUpload from 'dashboard/components-next/FileUpload/FileUpload.vue';
+// Removed Label import - using native HTML label elements
+import FileUpload from 'vue-upload-component';
 
 const props = defineProps({
   inboxes: {
@@ -139,9 +139,9 @@ watch(() => form.value.media_type, (newType) => {
   <form @submit.prevent="onSubmit" class="space-y-6">
     <!-- Campaign Title -->
     <div>
-      <Label for="title" required>
-        {{ t('CAMPAIGN.WHATSAPP_API.FORM.TITLE') }}
-      </Label>
+      <label for="title" class="mb-0.5 text-sm font-medium text-n-slate-12">
+        {{ t('CAMPAIGN.WHATSAPP_API.FORM.TITLE') }} *
+      </label>
       <Input
         id="title"
         v-model="form.title"
@@ -153,9 +153,9 @@ watch(() => form.value.media_type, (newType) => {
 
     <!-- Inbox Selection -->
     <div>
-      <Label for="inbox" required>
-        {{ t('CAMPAIGN.WHATSAPP_API.FORM.INBOX') }}
-      </Label>
+      <label for="inbox" class="mb-0.5 text-sm font-medium text-n-slate-12">
+        {{ t('CAMPAIGN.WHATSAPP_API.FORM.INBOX') }} *
+      </label>
       <Select
         id="inbox"
         v-model="form.inbox_id"
@@ -168,9 +168,9 @@ watch(() => form.value.media_type, (newType) => {
 
     <!-- Media Type -->
     <div>
-      <Label for="media-type">
+      <label for="media-type" class="mb-0.5 text-sm font-medium text-n-slate-12">
         {{ t('CAMPAIGN.WHATSAPP_API.FORM.MEDIA_TYPE') }}
-      </Label>
+      </label>
       <Select
         id="media-type"
         v-model="form.media_type"
@@ -180,9 +180,9 @@ watch(() => form.value.media_type, (newType) => {
 
     <!-- Media Upload (if not text) -->
     <div v-if="form.media_type !== 'text'">
-      <Label for="media-upload">
+      <label for="media-upload" class="mb-0.5 text-sm font-medium text-n-slate-12">
         {{ t('CAMPAIGN.WHATSAPP_API.FORM.MEDIA_UPLOAD') }}
-      </Label>
+      </label>
       <FileUpload
         id="media-upload"
         :accept="form.media_type === 'image' ? 'image/*' : form.media_type === 'video' ? 'video/*' : form.media_type === 'audio' ? 'audio/*' : '*/*'"
@@ -193,9 +193,9 @@ watch(() => form.value.media_type, (newType) => {
 
     <!-- Message Content -->
     <div>
-      <Label for="message" required>
-        {{ t('CAMPAIGN.WHATSAPP_API.FORM.MESSAGE') }}
-      </Label>
+      <label for="message" class="mb-0.5 text-sm font-medium text-n-slate-12">
+        {{ t('CAMPAIGN.WHATSAPP_API.FORM.MESSAGE') }} *
+      </label>
       <Textarea
         id="message"
         v-model="form.message"
@@ -211,9 +211,9 @@ watch(() => form.value.media_type, (newType) => {
 
     <!-- Audience Selection -->
     <div>
-      <Label>
+      <label class="mb-0.5 text-sm font-medium text-n-slate-12">
         {{ t('CAMPAIGN.WHATSAPP_API.FORM.AUDIENCE') }}
-      </Label>
+      </label>
       <Select
         v-model="selectedAudience"
         :options="audienceOptions"
@@ -222,9 +222,9 @@ watch(() => form.value.media_type, (newType) => {
 
     <!-- Label Selection (if labels audience) -->
     <div v-if="selectedAudience === 'labels'">
-      <Label>
+      <label class="mb-0.5 text-sm font-medium text-n-slate-12">
         {{ t('CAMPAIGN.WHATSAPP_API.FORM.SELECT_LABELS') }}
-      </Label>
+      </label>
       <Select
         v-model="selectedLabels"
         :options="labelOptions"
@@ -235,9 +235,9 @@ watch(() => form.value.media_type, (newType) => {
 
     <!-- Custom Filters (if custom audience) -->
     <div v-if="selectedAudience === 'custom'" class="space-y-4">
-      <Label>
+      <label class="mb-0.5 text-sm font-medium text-n-slate-12">
         {{ t('CAMPAIGN.WHATSAPP_API.FORM.CUSTOM_FILTERS') }}
-      </Label>
+      </label>
       <p class="text-sm text-slate-600">
         {{ t('CAMPAIGN.WHATSAPP_API.FORM.CUSTOM_FILTERS_HINT') }}
       </p>
@@ -246,9 +246,9 @@ watch(() => form.value.media_type, (newType) => {
 
     <!-- Scheduled Time -->
     <div>
-      <Label for="scheduled-at">
+      <label for="scheduled-at" class="mb-0.5 text-sm font-medium text-n-slate-12">
         {{ t('CAMPAIGN.WHATSAPP_API.FORM.SCHEDULED_AT') }}
-      </Label>
+      </label>
       <Input
         id="scheduled-at"
         v-model="form.scheduled_at"
