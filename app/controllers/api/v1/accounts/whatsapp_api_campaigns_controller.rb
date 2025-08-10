@@ -79,7 +79,12 @@ class Api::V1::Accounts::WhatsappApiCampaignsController < Api::V1::Accounts::Bas
     inbox = Current.account.inboxes.find_by(id: params[:whatsapp_api_campaign][:inbox_id])
     
     unless inbox&.channel_type == 'Channel::Api'
-      render json: { error: 'Inbox must be an API Channel' }, status: :unprocessable_entity
+      return render json: { error: 'Inbox must be an API Channel' }, status: :unprocessable_entity
+    end
+
+    # Ensure the API inbox is explicitly enabled for WhatsApp API campaigns (B1 flag)
+    unless inbox.channel.whatsapp_api_enabled?
+      return render json: { error: 'API Inbox is not enabled for WhatsApp API campaigns' }, status: :unprocessable_entity
     end
   end
 

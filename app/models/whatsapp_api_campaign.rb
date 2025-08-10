@@ -93,6 +93,12 @@ class WhatsappApiCampaign < ApplicationRecord
 
     unless inbox.channel_type == 'Channel::Api'
       errors.add(:inbox, 'must be an API Channel for WhatsApp API campaigns')
+      return
+    end
+
+    # Enforce B1 flag: the API channel must be explicitly enabled for WhatsApp API campaigns
+    unless inbox.channel.whatsapp_api_enabled?
+      errors.add(:inbox, 'API Inbox is not enabled for WhatsApp API campaigns')
     end
   end
 

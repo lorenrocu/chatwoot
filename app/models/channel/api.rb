@@ -28,6 +28,20 @@ class Channel::Api < ApplicationRecord
   has_secure_token :hmac_token
   validate :ensure_valid_agent_reply_time_window
   validates :webhook_url, length: { maximum: Limits::URL_LENGTH_LIMIT }
+  
+  def whatsapp_api_enabled?
+    additional_attributes['whatsapp_api_enabled'] == true
+  end
+  
+  def enable_whatsapp_api!
+    self.additional_attributes = (additional_attributes || {}).merge('whatsapp_api_enabled' => true)
+    save!
+  end
+  
+  def disable_whatsapp_api!
+    self.additional_attributes = (additional_attributes || {}).merge('whatsapp_api_enabled' => false)
+    save!
+  end
 
   def name
     'API'

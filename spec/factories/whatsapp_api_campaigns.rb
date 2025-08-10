@@ -95,6 +95,7 @@ FactoryBot.define do
   factory :channel_api_with_whatsapp_credentials, parent: :channel_api do
     additional_attributes do
       {
+        whatsapp_api_enabled: true,
         whatsapp_api_credentials: {
           base_url: 'https://api.evolution.com',
           token: 'test_api_token_123',

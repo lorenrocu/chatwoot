@@ -28,14 +28,18 @@ class WhatsappApi::SendMessageJob < ApplicationJob
 
     whatsapp_number = contact_inbox.source_id
     api_credentials = get_api_credentials(campaign.inbox)
+
+    has_media = campaign.multimedia.present?
+    if has_media
+      payload = build_media_payload(whatsapp_number, campaign.message, campaign.multimedia)
+    else
+      payload = build_text_payload(whatsapp_number, campaign.message)
+    end
+
+    response = send_to_whatsapp_api(api_credentials, payload, has_media)
     
-    payload = build_message_payload(campaign, whatsapp_number)
-    response = send_to_whatsapp_api(api_credentials, payload)
-    
-    # Log the response for debugging
     Rails.logger.info "WhatsApp API response for campaign #{campaign.id}: #{response}"
     
-    # Create conversation and message record
     create_conversation_and_message(campaign, contact, contact_inbox)
   end
 
@@ -53,41 +57,40 @@ class WhatsappApi::SendMessageJob < ApplicationJob
     }
   end
 
-  def build_message_payload(campaign, whatsapp_number)
+  def build_text_payload(whatsapp_number, message_text)
+    {
+      number: whatsapp_number,
+      text: message_text
+    }
+  end
+
+  def build_media_payload(whatsapp_number, message_text, multimedia)
     payload = {
       number: whatsapp_number,
-      text: campaign.message
+      mediatype: multimedia['type'],
+      media: multimedia['url'],
+      fileName: multimedia['filename'] || 'file'
     }
 
-    # Add multimedia if present
-    if campaign.multimedia.present?
-      case campaign.multimedia['type']
-      when 'image'
-        payload[:mediaMessage] = {
-          mediatype: 'image',
-          media: campaign.multimedia['url'],
-          caption: campaign.message
-        }
-        payload.delete(:text) # Remove text when sending media with caption
-      when 'document'
-        payload[:mediaMessage] = {
-          mediatype: 'document',
-          media: campaign.multimedia['url'],
-          fileName: campaign.multimedia['filename'] || 'document'
-        }
-      when 'audio'
-        payload[:mediaMessage] = {
-          mediatype: 'audio',
-          media: campaign.multimedia['url']
-        }
-      end
+    payload[:mimetype] = multimedia['mimetype'] if multimedia['mimetype'].present?
+    
+    case multimedia['type']
+    when 'image'
+      payload[:caption] = message_text if message_text.present?
+    when 'document', 'audio'
+      # For documents/audio, we can keep caption empty and send text separately if needed
     end
 
     payload
   end
 
-  def send_to_whatsapp_api(credentials, payload)
-    uri = URI("#{credentials[:base_url]}/message/sendText/#{credentials[:instance_name]}")
+  def get_api_endpoint(credentials, has_multimedia)
+    endpoint = has_multimedia ? 'sendMedia' : 'sendText'
+    "#{credentials[:base_url]}/message/#{endpoint}/#{credentials[:instance_name]}"
+  end
+
+  def send_to_whatsapp_api(credentials, payload, has_multimedia = false)
+    uri = URI(get_api_endpoint(credentials, has_multimedia))
     
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = uri.scheme == 'https'
@@ -98,16 +101,21 @@ class WhatsappApi::SendMessageJob < ApplicationJob
     request.body = payload.to_json
     
     response = http.request(request)
-    
-    unless response.code.to_i.between?(200, 299)
+
+    status = response.code.to_i
+    unless status.between?(200, 299)
       raise "WhatsApp API request failed with status #{response.code}: #{response.body}"
     end
     
     JSON.parse(response.body)
   end
 
+  def should_retry?(status_code)
+    return false if status_code.between?(400, 499)
+    true
+  end
+
   def create_conversation_and_message(campaign, contact, contact_inbox)
-    # Find or create conversation
     conversation = Conversation.find_or_create_by(
       account: campaign.account,
       inbox: campaign.inbox,
@@ -117,7 +125,6 @@ class WhatsappApi::SendMessageJob < ApplicationJob
       conv.assignee = campaign.sender
     end
 
-    # Create outgoing message
     message = conversation.messages.create!(
       account: campaign.account,
       inbox: campaign.inbox,
@@ -128,7 +135,6 @@ class WhatsappApi::SendMessageJob < ApplicationJob
       source_id: SecureRandom.uuid
     )
 
-    # Add multimedia attachment if present
     if campaign.multimedia.present? && campaign.multimedia['url'].present?
       message.attachments.create!(
         account: campaign.account,

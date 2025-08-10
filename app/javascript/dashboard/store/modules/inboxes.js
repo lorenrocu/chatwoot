@@ -138,10 +138,15 @@ export const getters = {
       item => item.channel_type === INBOX_TYPES.WHATSAPP
     );
   },
+  // Added to support WhatsApp API Campaigns: filter API inboxes with whatsapp_api_enabled flag
   getApiInboxes($state) {
-    return $state.records.filter(
-      item => item.channel_type === INBOX_TYPES.API
-    );
+    return $state.records.filter(item => {
+      const isApiChannel = item.channel_type === INBOX_TYPES.API;
+      const isWhatsAppApiEnabled = Boolean(
+        item?.additional_attributes?.whatsapp_api_enabled
+      );
+      return isApiChannel && isWhatsAppApiEnabled;
+    });
   },
   dialogFlowEnabledInboxes($state) {
     return $state.records.filter(
