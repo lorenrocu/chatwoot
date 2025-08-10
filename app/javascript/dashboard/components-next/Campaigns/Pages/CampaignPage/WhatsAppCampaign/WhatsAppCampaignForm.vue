@@ -265,7 +265,7 @@ watch(
         {{ t('CAMPAIGN.WHATSAPP_API.CREATE.FORM.TEMPLATE.PREVIEW') }}
       </label>
       <div class="rounded border border-n-slate-7 bg-n-alpha-black2 p-3 text-sm text-n-slate-12">
-        {{ processedString }}
+        {{ templateParserRef?.processedString || selectedTemplate?.components?.[0]?.text || '' }}
       </div>
     </div>
 
