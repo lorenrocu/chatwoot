@@ -42,7 +42,11 @@ export const actions = {
   create: async function createWhatsAppApiCampaign({ commit }, campaignObj) {
     commit(types.SET_WHATSAPP_API_CAMPAIGN_UI_FLAG, { isCreating: true });
     try {
-      const response = await WhatsAppApiCampaignAPI.create(campaignObj);
+      // Wrap the campaign data in the expected format for the API
+      const payload = {
+        whatsapp_api_campaign: campaignObj
+      };
+      const response = await WhatsAppApiCampaignAPI.create(payload);
       commit(types.ADD_WHATSAPP_API_CAMPAIGN, response.data);
       return response;
     } catch (error) {
@@ -50,7 +54,7 @@ export const actions = {
     } finally {
       commit(types.SET_WHATSAPP_API_CAMPAIGN_UI_FLAG, { isCreating: false });
     }
-  },
+  }
 
   update: async function updateWhatsAppApiCampaign(
     { commit },

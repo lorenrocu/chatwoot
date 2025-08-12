@@ -28,16 +28,12 @@ const onClose = () => {
 };
 
 const onSubmit = async campaignData => {
-  console.log('Dialog received campaign data:', campaignData);
   try {
     isCreating.value = true;
-    console.log('Dispatching create action...');
-    const response = await store.dispatch('whatsappApiCampaigns/create', campaignData);
-    console.log('Create response:', response);
+    await store.dispatch('whatsappApiCampaigns/create', campaignData);
     showAlert(t('CAMPAIGN.WHATSAPP_API.CREATE.SUCCESS'));
     onClose();
   } catch (error) {
-    console.error('Create error:', error);
     showAlert(t('CAMPAIGN.WHATSAPP_API.CREATE.ERROR'));
   } finally {
     isCreating.value = false;

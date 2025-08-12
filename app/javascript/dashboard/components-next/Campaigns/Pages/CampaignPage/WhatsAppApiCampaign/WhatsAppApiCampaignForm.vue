@@ -102,20 +102,13 @@ const validateForm = () => {
 };
 
 const onSubmit = () => {
-  console.log('Form submission started');
-  console.log('Form data:', form.value);
-  
-  if (!validateForm()) {
-    console.log('Form validation failed:', errors.value);
-    return;
-  }
+  if (!validateForm()) return;
   
   const campaignData = {
     ...form.value,
     audience: buildAudienceConfig(),
   };
   
-  console.log('Campaign data to submit:', campaignData);
   emit('submit', campaignData);
 };
 
