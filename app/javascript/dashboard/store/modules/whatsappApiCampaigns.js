@@ -54,7 +54,7 @@ export const actions = {
     } finally {
       commit(types.SET_WHATSAPP_API_CAMPAIGN_UI_FLAG, { isCreating: false });
     }
-  }
+  },
 
   update: async function updateWhatsAppApiCampaign(
     { commit },
