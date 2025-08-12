@@ -17,6 +17,13 @@ const emit = defineEmits(['click', 'close']);
 const handleButtonClick = () => {
   emit('click');
 };
+
+// Ignore clickaway if the click originated inside a modal
+const handleClickAway = event => {
+  // If a modal is present and the click happens inside it, do not close
+  if (event?.target?.closest?.('.modal-mask')) return;
+  emit('close');
+};
 </script>
 
 <template>
@@ -28,7 +35,7 @@ const handleButtonClick = () => {
             {{ headerTitle }}
           </span>
           <div
-            v-on-clickaway="() => emit('close')"
+            v-on-clickaway="handleClickAway"
             class="relative group/campaign-button"
           >
             <Button

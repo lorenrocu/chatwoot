@@ -34,15 +34,27 @@ const toggleMenu = () => {
   isOpen.value = !isOpen.value;
 };
 
-const handleSelect = value => {
+const handleSelect = (value, event) => {
+  // Prevent event propagation to avoid triggering parent clickaway handlers
+  if (event) {
+    event.stopPropagation();
+  }
   emit('update:modelValue', value);
+  isOpen.value = false;
+};
+
+// Stop propagation when closing via clickaway to prevent parent handlers
+const stopPropagationClickAway = (event) => {
+  if (event) {
+    event.stopPropagation();
+  }
   isOpen.value = false;
 };
 </script>
 
 <template>
   <div
-    v-on-clickaway="() => (isOpen = false)"
+    v-on-clickaway="stopPropagationClickAway"
     class="relative flex flex-col gap-1 w-fit"
   >
     <Button
@@ -78,7 +90,7 @@ const handleSelect = value => {
         trailing-icon
         class="!justify-end !px-2.5 !h-7"
         :class="{ '!bg-n-alpha-2': option.value === modelValue }"
-        @click="handleSelect(option.value)"
+        @click="handleSelect(option.value, $event)"
       />
     </div>
   </div>

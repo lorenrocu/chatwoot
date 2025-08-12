@@ -46,24 +46,27 @@ onMounted(() => {
 </script>
 
 <template>
-  <woot-modal
-    v-model:show="showModal"
-    :on-close="onClose"
-    size="large"
-  >
-    <woot-modal-header
-      :header-title="t('CAMPAIGN.WHATSAPP_API.NEW_CAMPAIGN')"
-    />
-    
-    <div class="modal-content">
-      <WhatsAppApiCampaignForm
-        :inboxes="inboxes"
-        :is-creating="isCreating"
-        @submit="onSubmit"
-        @cancel="onClose"
+  <!-- Use Teleport to render modal outside the CampaignLayout clickaway zone -->
+  <Teleport to="body">
+    <woot-modal
+      v-model:show="showModal"
+      :on-close="onClose"
+      size="large"
+    >
+      <woot-modal-header
+        :header-title="t('CAMPAIGN.WHATSAPP_API.NEW_CAMPAIGN')"
       />
-    </div>
-  </woot-modal>
+      
+      <div class="modal-content">
+        <WhatsAppApiCampaignForm
+          :inboxes="inboxes"
+          :is-creating="isCreating"
+          @submit="onSubmit"
+          @cancel="onClose"
+        />
+      </div>
+    </woot-modal>
+  </Teleport>
 </template>
 
 <style scoped>
