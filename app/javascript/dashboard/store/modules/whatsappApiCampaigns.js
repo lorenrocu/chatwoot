@@ -64,8 +64,6 @@ export const actions = {
         };
       }
       
-      console.log('Sending campaign data:', cleanedCampaignObj);
-      
       // Wrap the campaign data in the expected format for the API
       const payload = {
         whatsapp_api_campaign: cleanedCampaignObj
@@ -75,7 +73,6 @@ export const actions = {
       commit(types.ADD_WHATSAPP_API_CAMPAIGN, response.data);
       return response;
     } catch (error) {
-      console.error('Campaign creation error:', error.response?.data || error.message);
       throw new Error(error);
     } finally {
       commit(types.SET_WHATSAPP_API_CAMPAIGN_UI_FLAG, { isCreating: false });
