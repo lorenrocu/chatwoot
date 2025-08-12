@@ -42,14 +42,40 @@ export const actions = {
   create: async function createWhatsAppApiCampaign({ commit }, campaignObj) {
     commit(types.SET_WHATSAPP_API_CAMPAIGN_UI_FLAG, { isCreating: true });
     try {
+      // Clean up the campaign data before sending
+      const cleanedCampaignObj = {
+        title: campaignObj.title,
+        message: campaignObj.message,
+        inbox_id: campaignObj.inbox_id,
+        audience: campaignObj.audience || {},
+        enabled: campaignObj.enabled !== undefined ? campaignObj.enabled : true,
+      };
+      
+      // Only include scheduled_at if it's actually set and valid
+      if (campaignObj.is_scheduled && campaignObj.scheduled_at) {
+        cleanedCampaignObj.scheduled_at = campaignObj.scheduled_at;
+      }
+      
+      // Only include multimedia if media_type is not text
+      if (campaignObj.media_type && campaignObj.media_type !== 'text' && campaignObj.media_url) {
+        cleanedCampaignObj.multimedia = {
+          type: campaignObj.media_type,
+          url: campaignObj.media_url
+        };
+      }
+      
+      console.log('Sending campaign data:', cleanedCampaignObj);
+      
       // Wrap the campaign data in the expected format for the API
       const payload = {
-        whatsapp_api_campaign: campaignObj
+        whatsapp_api_campaign: cleanedCampaignObj
       };
+      
       const response = await WhatsAppApiCampaignAPI.create(payload);
       commit(types.ADD_WHATSAPP_API_CAMPAIGN, response.data);
       return response;
     } catch (error) {
+      console.error('Campaign creation error:', error.response?.data || error.message);
       throw new Error(error);
     } finally {
       commit(types.SET_WHATSAPP_API_CAMPAIGN_UI_FLAG, { isCreating: false });
