@@ -231,6 +231,14 @@
         }
       },
       "FORM": {
+        "INFO_TITLE": "WhatsApp API Campaign",
+        "INFO_DESCRIPTION": "Create and send multimedia campaigns using your WhatsApp Business API integration.",
+        "SECTIONS": {
+          "BASIC_CONFIG": "Basic Configuration",
+          "MESSAGE_CONTENT": "Message Content",
+          "AUDIENCE": "Target Audience",
+          "SCHEDULING": "Scheduling Options"
+        },
         "TITLE": "Campaign Title",
         "TITLE_PLACEHOLDER": "Enter a descriptive title for your campaign",
         "INBOX": "WhatsApp API Inbox",
@@ -245,11 +253,14 @@
         "SELECT_LABELS_PLACEHOLDER": "Choose customer labels to target",
         "CUSTOM_FILTERS": "Custom Filters",
         "CUSTOM_FILTERS_HINT": "Define advanced criteria to target specific customer segments",
-        "SCHEDULED_AT": "Schedule Campaign",
+        "SCHEDULE_CAMPAIGN": "Schedule Campaign",
+        "SCHEDULE_DESCRIPTION": "Send this campaign at a specific date and time",
+        "SCHEDULED_AT": "Schedule Date & Time",
         "SCHEDULED_AT_PLACEHOLDER": "Select date and time to send",
-        "SCHEDULED_AT_HINT": "Leave empty to send immediately",
+        "SCHEDULED_AT_HINT": "Campaign will be sent automatically at the scheduled time",
         "CANCEL": "Cancel",
-        "CREATE": "Create Campaign"
+        "CREATE": "Create Campaign",
+        "SCHEDULE": "Schedule Campaign"
       },
       "CREATE": {
         "SUCCESS": "WhatsApp API campaign created successfully",
