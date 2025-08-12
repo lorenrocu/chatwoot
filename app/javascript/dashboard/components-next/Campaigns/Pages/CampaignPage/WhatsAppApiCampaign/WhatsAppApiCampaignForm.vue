@@ -5,7 +5,9 @@ import { useStore } from 'dashboard/composables/store';
 
 import Input from 'dashboard/components-next/input/Input.vue';
 import TextArea from 'dashboard/components-next/textarea/TextArea.vue';
-import Select from 'dashboard/components-next/selectmenu/SelectMenu.vue';
+import Select from 'v3/components/Form/Select.vue';
+import ComboBox from 'dashboard/components-next/combobox/ComboBox.vue';
+import TagMultiSelectComboBox from 'dashboard/components-next/combobox/TagMultiSelectComboBox.vue';
 import Button from 'dashboard/components-next/button/Button.vue';
 import Switch from 'dashboard/components-next/switch/Switch.vue';
 import Accordion from 'dashboard/components-next/Accordion/Accordion.vue';
@@ -100,13 +102,20 @@ const validateForm = () => {
 };
 
 const onSubmit = () => {
-  if (!validateForm()) return;
+  console.log('Form submission started');
+  console.log('Form data:', form.value);
+  
+  if (!validateForm()) {
+    console.log('Form validation failed:', errors.value);
+    return;
+  }
   
   const campaignData = {
     ...form.value,
     audience: buildAudienceConfig(),
   };
   
+  console.log('Campaign data to submit:', campaignData);
   emit('submit', campaignData);
 };
 
@@ -180,12 +189,13 @@ watch(() => form.value.media_type, (newType) => {
             </label>
             <Select
               id="inbox"
+              name="inbox"
               v-model="form.inbox_id"
               :options="inboxOptions"
+              :label="t('CAMPAIGN.WHATSAPP_API.FORM.INBOX')"
               :placeholder="t('CAMPAIGN.WHATSAPP_API.FORM.INBOX_PLACEHOLDER')"
               :has-error="!!errors.inbox_id"
-              :message="errors.inbox_id"
-              required
+              :error-message="errors.inbox_id"
             />
           </div>
         </div>
@@ -202,8 +212,11 @@ watch(() => form.value.media_type, (newType) => {
             </label>
             <Select
               id="media-type"
+              name="media_type"
               v-model="form.media_type"
               :options="mediaTypes"
+              :label="t('CAMPAIGN.WHATSAPP_API.FORM.MEDIA_TYPE')"
+              :placeholder="t('CAMPAIGN.WHATSAPP_API.FORM.MEDIA_TYPE_PLACEHOLDER')"
             />
           </div>
 
@@ -260,8 +273,11 @@ watch(() => form.value.media_type, (newType) => {
               {{ t('CAMPAIGN.WHATSAPP_API.FORM.AUDIENCE') }}
             </label>
             <Select
+              name="audience"
               v-model="selectedAudience"
               :options="audienceOptions"
+              :label="t('CAMPAIGN.WHATSAPP_API.FORM.AUDIENCE')"
+              :placeholder="t('CAMPAIGN.WHATSAPP_API.FORM.AUDIENCE_PLACEHOLDER')"
             />
           </div>
 
@@ -271,11 +287,12 @@ watch(() => form.value.media_type, (newType) => {
               <Icon icon="i-lucide-tags" class="w-4 h-4" />
               {{ t('CAMPAIGN.WHATSAPP_API.FORM.SELECT_LABELS') }}
             </label>
-            <Select
+            <TagMultiSelectComboBox
               v-model="selectedLabels"
               :options="labelOptions"
-              multiple
               :placeholder="t('CAMPAIGN.WHATSAPP_API.FORM.SELECT_LABELS_PLACEHOLDER')"
+              :search-placeholder="t('CAMPAIGN.WHATSAPP_API.FORM.SEARCH_LABELS')"
+              :empty-state="t('CAMPAIGN.WHATSAPP_API.FORM.NO_LABELS_FOUND')"
             />
           </div>
 
