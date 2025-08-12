@@ -34,7 +34,7 @@ const onSubmit = async campaignData => {
     showAlert(t('CAMPAIGN.WHATSAPP_API.CREATE.SUCCESS'));
     onClose();
   } catch (error) {
-    showAlert(t('CAMPAIGN.WHATSAPP_API.CREATE.ERROR'));
+    showAlert(error.response?.data?.message || t('CAMPAIGN.WHATSAPP_API.CREATE.ERROR'));
   } finally {
     isCreating.value = false;
   }
