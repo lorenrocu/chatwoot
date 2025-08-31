@@ -71,12 +71,12 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
     # Usar headers por defecto si no se especifican
     headers = column_names.present? ? valid_headers(column_names) : default_columns
     
-    # Obtener todos los contactos de la cuenta actual
-    contacts_relation = Current.account.contacts.resolved_contacts
+    # Obtener los contactos aplicando los filtros
+    contacts_relation = get_filtered_contacts(filter_params)
     
     Rails.logger.info "Export Direct - Headers: #{headers}"
     Rails.logger.info "Export Direct - Total contacts in account: #{Current.account.contacts.count}"
-    Rails.logger.info "Export Direct - Resolved contacts count: #{contacts_relation.count}"
+    Rails.logger.info "Export Direct - Filtered contacts count: #{contacts_relation.count}"
     Rails.logger.info "Export Direct - Filter params: #{filter_params}"
     
     # Generar CSV con datos básicos
@@ -88,7 +88,7 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
         Rails.logger.info "No contacts found, adding test row"
         csv << headers.map { |h| "test_#{h}" }
       else
-        contacts_relation.limit(100).each do |contact|
+        contacts_relation.each do |contact|
           row = headers.map do |header|
             case header
             when 'name'
@@ -126,6 +126,18 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
               filename: "#{Current.account.name}_#{Current.account.id}_contacts_#{Date.current.strftime('%Y%m%d')}.csv",
               type: 'text/csv',
               disposition: 'attachment'
+  end
+  
+  # Método para obtener contactos filtrados
+  def get_filtered_contacts(filter_params)
+    if filter_params.present? && filter_params[:payload].present? && filter_params[:payload].any?
+      result = ::Contacts::FilterService.new(Current.account, Current.user, filter_params).perform
+      result[:contacts]
+    elsif filter_params[:label].present?
+      Current.account.contacts.resolved_contacts(use_crm_v2: Current.account.feature_enabled?('crm_v2')).tagged_with(filter_params[:label], any: true)
+    else
+      Current.account.contacts.resolved_contacts(use_crm_v2: Current.account.feature_enabled?('crm_v2'))
+    end
   end
 
   # returns online contacts
